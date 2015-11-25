@@ -13,22 +13,20 @@ import com.squareup.picasso.Picasso;
 
 public class CustomViewHolderFactory extends BaseEasyViewHolderFactory {
 
-    private Picasso picasso;
+  private Picasso picasso;
 
-    public CustomViewHolderFactory(Context context) {
-        super(context);
-        this.picasso = Picasso.with(context);
+  public CustomViewHolderFactory(Context context) {
+    super(context);
+    this.picasso = Picasso.with(context);
+  }
+
+  @Override public EasyViewHolder create(int viewType, ViewGroup parent) {
+    Class valueClass = getValueClassTypes().get(viewType);
+    if (valueClass == ImageData.class) {
+      return new ImageEasyViewHolder(context, parent, picasso);
+    } else if (valueClass == TextData.class) {
+      return new TextDataEasyViewHolder(context, parent);
     }
-
-    @Override
-    public EasyViewHolder create(Class valueClass, ViewGroup parent) {
-        if (valueClass == ImageData.class) {
-            return new ImageEasyViewHolder(context, parent, picasso);
-        } else if (valueClass == TextData.class) {
-            return new TextDataEasyViewHolder(context, parent);
-        }
-        return null;
-    }
-
-
+    return null;
+  }
 }

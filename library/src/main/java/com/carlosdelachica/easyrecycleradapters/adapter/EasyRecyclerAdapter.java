@@ -4,10 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.carlosdelachica.easyrecycleradapters.adapter.debouncedlisteners.DebouncedOnClickListener;
 import com.carlosdelachica.easyrecycleradapters.adapter.debouncedlisteners.DebouncedOnLongClickListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +16,6 @@ public class EasyRecyclerAdapter extends RecyclerView.Adapter<EasyViewHolder> {
 
   private List<Object> dataList = new ArrayList<>();
   private BaseEasyViewHolderFactory viewHolderFactory;
-  private List<Class> valueClassTypes = new ArrayList<>();
   private OnItemClickListener itemClickListener;
   private OnItemLongClickListener longClickListener;
 
@@ -43,12 +40,15 @@ public class EasyRecyclerAdapter extends RecyclerView.Adapter<EasyViewHolder> {
   }
 
   public void bind(Class valueClass, Class<? extends EasyViewHolder> viewHolder) {
-    valueClassTypes.add(valueClass);
     viewHolderFactory.bind(valueClass, viewHolder);
   }
 
+  public void viewHolderFactory(BaseEasyViewHolderFactory easyViewHolderFactory) {
+    this.viewHolderFactory = easyViewHolderFactory;
+  }
+
   @Override public EasyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    EasyViewHolder easyViewHolder = viewHolderFactory.create(valueClassTypes.get(viewType), parent);
+    EasyViewHolder easyViewHolder = viewHolderFactory.create(viewType, parent);
     bindListeners(easyViewHolder);
     return easyViewHolder;
   }
@@ -65,7 +65,7 @@ public class EasyRecyclerAdapter extends RecyclerView.Adapter<EasyViewHolder> {
   }
 
   @Override public int getItemViewType(int position) {
-    return valueClassTypes.indexOf(dataList.get(position).getClass());
+    return viewHolderFactory.itemViewType(dataList.get(position));
   }
 
   @Override public int getItemCount() {
